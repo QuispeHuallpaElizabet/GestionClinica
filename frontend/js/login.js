@@ -7,7 +7,7 @@ function loguear(){
     let pass = document.getElementById("password").value;
 
     if(email===correo && pass===contraseña){
-        window.location="recepcionista/inicio.html";
+        window.location="recepcion/inicio.html";
     }else{
         alert("Credenciales incorrectas")
     }

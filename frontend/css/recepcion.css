@@ -1,4 +1,3 @@
-
     body {
     background: #ffffff;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -12,8 +11,8 @@
     left: 0;
     bottom: 0;
     width: 260px;
-    background: #f0f3ff;
-    border-right: 1px solid #c2c6d4;
+    background-color: #00468c;
+    color: #ffffff;
     padding: 16px;
     height: 100vh;
     overflow-y: auto;
@@ -22,7 +21,7 @@
     }
 
     .sidebar-brand {
-    color: #00478d;
+    color: #ffffff;
     font-size: 24px;
     font-weight: 700;
     line-height: 32px;
@@ -31,9 +30,9 @@
     }
 
     .nav-pills .nav-link {
-    border-radius: 4px;
-    padding: 8px 16px;
-    color: #424752;
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: #c8daff;
     font-weight: 400;
     display: flex;
     align-items: center;
@@ -41,30 +40,31 @@
     }
 
     .nav-pills .nav-link i {
-    font-size: 1.2rem;
-    width: 1.5rem;
-    text-align: center;
+        font-size: 1.2rem;
+        width: 1.5rem;
+        text-align: center;
     }
 
     .nav-pills .nav-link.active {
-    background: #5b6063;
-    color: #d6dade;
-    border-left: 4px solid #00478d;
-    padding-left: 12px;
+        background-color: #005eb8;
+        color: #ffffff;
+        border-left: 4px solid #7df4ff;
+        padding-left: 12px;
     }
 
     .nav-pills .nav-link:not(.active):hover {
-    background: #e9edf5;
+        background-color: rgba(125, 244, 255, 0.12);
+        color: #ffffff;
     }
 
     .sidebar-footer {
-    border-top: 1px solid #c2c6d4;
+    border-top: 1px solid rgba(200, 218, 255, 0.25);
     padding-top: 16px;
     margin-top: auto;
     }
 
     .avatar {
-    background: #d8e3fa;
+    background: #c8daff;
     border-radius: 12px;
     width: 48px;
     height: 48px;
@@ -73,7 +73,7 @@
     justify-content: center;
     font-weight: 700;
     font-size: 18px;
-    color: #00478d;
+    color: #00468c;
     flex-shrink: 0;
     }
 
@@ -109,30 +109,24 @@
     }
 
     .btn-outline-primary {
-    border-color: #00478d;
-    color: #00478d;
-    background: #f9f9ff;
-    font-weight: 600;
-    font-size: 18px;
-    padding: 8px 24px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-color: #005eb8;
+    color: #005eb8;
+    background: #ffffff;
     }
+
     .btn-outline-primary:hover {
-    background: #00478d;
-    color: #fff;
+        background: #005eb8;
+        color: #ffffff;
     }
 
     .btn-primary {
-    background: #00478d;
-    border-color: #00478d;
-    font-weight: 600;
-    font-size: 18px;
-    padding: 8px 24px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        background: #005eb8;
+        border-color: #005eb8;
     }
+
     .btn-primary:hover {
-    background: #003366;
-    border-color: #003366;
+        background: #00468c;
+        border-color: #00468c;
     }
 
 
@@ -144,12 +138,32 @@
     padding: 24px;
     height: 100%;
     transition: box-shadow 0.15s;
-    border-left-color: #cbd5e1 !important;
+    border-left-color: #f9f9ff;
     }
+
+    .card-blue {
+    background-color: #ebf1ff;
+    border-left-color: #005eb8;
+        }
+
+        .card-green {
+            background-color: #e4f7f0;
+            border-left-color: #198754;
+        }
+
+        .card-yellow {
+            background-color: #fff3cd;
+            border-left-color: #d39e00;
+        }
+
+        .card-purple {
+            background-color: #eee8ff;
+            border-left-color: #6f42c1;
+        }
+
     .card-metric:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-
     .metric-label {
     color: #424752;
     font-weight: 600;
@@ -199,7 +213,15 @@
     vertical-align: middle;
     border-bottom: 1px solid #e2e8f0;
     color: #111c2c;
+    justify-content: center;
     }
+
+    .table tbody td.acciones {
+    display: flex;
+    gap: 12px; /* Modifica este número para dar más o menos espacio */
+    justify-content: center; /* Centra los botones en la celda (opcional) */
+    }
+
     .table tbody tr:last-child td {
     border-bottom: none;
     }
@@ -229,15 +251,7 @@
     color: #93000a;
     }
 
-    /* MODALES*/
-    /* ---- Color principal #00478d en focus de inputs ---- */
-.form-control:focus,
-.form-select:focus {
-    border-color: #00478d;
-    box-shadow: 0 0 0 3px rgba(0, 71, 141, 0.1);
-    }
-
-    /* ---- Botones de horario (no hay equivalente en Bootstrap) ---- */
+    /*Tabla Proximas Citas*/
     .btn-horario {
     border: 1px solid #c2c6d4;
     border-radius: 6px;
@@ -257,12 +271,6 @@
     border-color: #00478d;
     }
 
-    /* ---- Borde izquierdo de las tarjetas de métricas (si no usas card-metric) ---- */
-    .card-metric {
-    border-left: 4px solid #cbd5e1 !important;
-    }
-
-    /* ---- Ajuste responsive de la barra lateral (si no usas clases de Bootstrap) ---- */
     @media (max-width: 768px) {
     .sidebar {
         position: relative !important;
