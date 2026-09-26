@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel administrador | NovaSalud</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/hospital-regular-full.svg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="../css/panel.css" />
+</head>
+<body data-required-role="admin">
+
+    <!-- ======== BARRA LATERAL ======== -->
+    <nav class="sidebar d-flex flex-column">
+        <h1 class="sidebar-brand">NOVASALUD</h1>
+        <div class="sidebar-role">Panel Administrador</div>
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item"><a href="#inicio" class="nav-link active" data-seccion="inicio"><i class="bi bi-house-door"></i> Inicio</a></li>
+            <li class="nav-item"><a href="#sedes" class="nav-link" data-seccion="sedes"><i class="bi bi-building"></i> Sedes</a></li>
+            <li class="nav-item"><a href="#especialidades" class="nav-link" data-seccion="especialidades"><i class="bi bi-clipboard2-pulse"></i> Especialidades</a></li>
+            <li class="nav-item"><a href="#medicos" class="nav-link" data-seccion="medicos"><i class="bi bi-person-badge"></i> Médicos</a></li>
+            <li class="nav-item"><a href="#horarios" class="nav-link" data-seccion="horarios"><i class="bi bi-clock"></i> Horarios</a></li>
+            <li class="nav-item"><a href="#usuarios" class="nav-link" data-seccion="usuarios"><i class="bi bi-people"></i> Usuarios</a></li>
+            <li class="nav-item"><a href="#parametros" class="nav-link" data-seccion="parametros"><i class="bi bi-clock-history"></i> Duración de citas</a></li>
+            <li class="nav-item"><a href="#perfil" class="nav-link" data-seccion="perfil"><i class="bi bi-person"></i> Mi perfil</a></li>
+            <li class="nav-item"><a href="../index.html" class="nav-link" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right"></i> Salir</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="d-flex align-items-center gap-3">
+                <div class="avatar" data-user-initials>AD</div>
+                <div>
+                    <div class="fw-semibold text-white" data-user-name>Usuario</div>
+                    <small class="usuario-correo" data-user-email>correo@novasalud.com</small>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======== CONTENIDO PRINCIPAL ======== -->
+    <main class="main-content">
+        <header class="top-header d-flex justify-content-end align-items-center">
+            <span class="text-secondary me-auto" id="tituloVista">Inicio</span>
+            <span class="role-badge me-3" data-user-role>Administrador</span>
+            <i class="bi bi-person-circle fs-4"></i>
+        </header>
+
+        <!-- ============ VISTA INICIO ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin" id="vistaInicio" data-vista="inicio">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Bienvenido</h1>
+                    <p class="welcome-sub">Resumen general del sistema NovaSalud.</p>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4" id="metricasAdmin" aria-live="polite">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl">
+                    <div class="tarjeta-metrica tarjeta-azul">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-people fs-5 text-primary"></i>
+                            <span class="metric-label">Usuarios</span>
+                        </div>
+                        <span class="metric-number" id="metricaUsuarios">0</span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl">
+                    <div class="tarjeta-metrica tarjeta-verde">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-person-badge fs-5 text-success"></i>
+                            <span class="metric-label">Médicos</span>
+                        </div>
+                        <span class="metric-number" id="metricaMedicos">0</span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl">
+                    <div class="tarjeta-metrica tarjeta-amarilla">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-building fs-5 text-warning"></i>
+                            <span class="metric-label">Sedes</span>
+                        </div>
+                        <span class="metric-number" id="metricaSedes">0</span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl">
+                    <div class="tarjeta-metrica tarjeta-morada">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-clipboard2-pulse fs-5" style="color:#6f42c1;"></i>
+                            <span class="metric-label">Especialidades</span>
+                        </div>
+                        <span class="metric-number" id="metricaEspecialidades">0</span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl">
+                    <div class="tarjeta-metrica tarjeta-celeste">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-calendar-event fs-5 text-info"></i>
+                            <span class="metric-label">Citas de hoy</span>
+                        </div>
+                        <span class="metric-number" id="metricaCitasHoy">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="h5 fw-semibold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-lightning-charge"></i> Accesos rápidos
+            </h2>
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a href="#sedes" class="tarjeta-rapida" data-seccion="sedes">
+                        <div class="icono-rapido"><i class="bi bi-building"></i></div>
+                        <div>
+                            <div class="titulo-rapido">Sedes</div>
+                            <div class="sub-rapido">Registrar y administrar sedes</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a href="#especialidades" class="tarjeta-rapida" data-seccion="especialidades">
+                        <div class="icono-rapido"><i class="bi bi-clipboard2-pulse"></i></div>
+                        <div>
+                            <div class="titulo-rapido">Especialidades</div>
+                            <div class="sub-rapido">Gestionar especialidades médicas</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a href="#medicos" class="tarjeta-rapida" data-seccion="medicos">
+                        <div class="icono-rapido"><i class="bi bi-person-badge"></i></div>
+                        <div>
+                            <div class="titulo-rapido">Médicos</div>
+                            <div class="sub-rapido">Registrar y asociar médicos</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a href="#usuarios" class="tarjeta-rapida" data-seccion="usuarios">
+                        <div class="icono-rapido"><i class="bi bi-people"></i></div>
+                        <div>
+                            <div class="titulo-rapido">Usuarios</div>
+                            <div class="sub-rapido">Roles y estado de las cuentas</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <a href="#parametros" class="tarjeta-rapida" data-seccion="parametros">
+                        <div class="icono-rapido"><i class="bi bi-sliders"></i></div>
+                        <div>
+                            <div class="titulo-rapido">Parámetros</div>
+                            <div class="sub-rapido">Duración de citas y estados</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VISTA SEDES ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaSedes" data-vista="sedes">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Sedes</h1>
+                    <p class="welcome-sub">Registra y administra las sedes donde se brinda atención.</p>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary d-flex align-items-center gap-2 btn-nueva-sede"
+                            data-bs-toggle="modal" data-bs-target="#modalSede">
+                        <i class="bi bi-plus-circle"></i> Nueva sede
+                    </button>
+                </div>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-building fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Listado de sedes</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>NOMBRE</th>
+                                <th>DIRECCIÓN</th>
+                                <th>TELÉFONO</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaSedes"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA ESPECIALIDADES ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaEspecialidades" data-vista="especialidades">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Especialidades</h1>
+                    <p class="welcome-sub">Gestiona las especialidades médicas disponibles.</p>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary d-flex align-items-center gap-2 btn-nueva-especialidad"
+                            data-bs-toggle="modal" data-bs-target="#modalEspecialidad">
+                        <i class="bi bi-plus-circle"></i> Nueva especialidad
+                    </button>
+                </div>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-clipboard2-pulse fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Listado de especialidades</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>NOMBRE</th>
+                                <th>DURACIÓN</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaEspecialidades"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA MÉDICOS ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaMedicos" data-vista="medicos">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Médicos</h1>
+                    <p class="welcome-sub">Registra médicos y asócialos a una especialidad y una sede.</p>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary d-flex align-items-center gap-2 btn-nuevo-medico"
+                            data-bs-toggle="modal" data-bs-target="#modalMedico">
+                        <i class="bi bi-plus-circle"></i> Nuevo médico
+                    </button>
+                </div>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-person-badge fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Listado de médicos</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>MÉDICO</th>
+                                <th>ESPECIALIDAD</th>
+                                <th>SEDE</th>
+                                <th>CONTACTO</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMedicos"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA HORARIOS ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaHorarios" data-vista="horarios">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Horarios</h1>
+                    <p class="welcome-sub">Define los bloques de atención semanales de cada médico.</p>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary d-flex align-items-center gap-2 btn-nuevo-horario"
+                            data-bs-toggle="modal" data-bs-target="#modalHorario">
+                        <i class="bi bi-plus-circle"></i> Nuevo horario
+                    </button>
+                </div>
+            </div>
+
+            <div class="filtros-barra mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-6">
+                        <label for="horarioMedicoFiltro" class="form-label small fw-semibold">Médico</label>
+                        <select id="horarioMedicoFiltro" class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-clock fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Bloques de atención</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>DÍA</th>
+                                <th>HORA INICIO</th>
+                                <th>HORA FIN</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaHorarios"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+        <!-- ============ VISTA USUARIOS ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaUsuarios" data-vista="usuarios">
+            <div class="mb-4">
+                <h1 class="welcome-title">Usuarios</h1>
+                <p class="welcome-sub">Administra las cuentas del sistema, sus roles y su estado.</p>
+            </div>
+
+            <div class="filtros-barra mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label for="filtroBusquedaUsuarios" class="form-label small fw-semibold">Buscar</label>
+                        <input id="filtroBusquedaUsuarios" class="form-control" type="search" placeholder="Nombre o correo" />
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label for="filtroRol" class="form-label small fw-semibold">Rol</label>
+                        <select id="filtroRol" class="form-select">
+                            <option value="">Todos</option>
+                            <option>Administrador</option>
+                            <option>Recepción</option>
+                            <option>Médico</option>
+                            <option>Paciente</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label for="filtroEstado" class="form-label small fw-semibold">Estado</label>
+                        <select id="filtroEstado" class="form-select">
+                            <option value="">Todos</option>
+                            <option>Activo</option>
+                            <option>Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-people fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Cuentas registradas</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>USUARIO</th>
+                                <th>EMAIL</th>
+                                <th>ROL</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaUsuarios"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+<!-- ============ VISTA DURACIÓN DE CITAS ============ -->
+<section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaParametros" data-vista="parametros">
+    <div class="mb-4">
+        <h1 class="welcome-title">Duración de citas</h1>
+        <p class="welcome-sub">Configura cuántos minutos dura cada cita según la especialidad.</p>
+    </div>
+
+    <section class="table-container">
+        <div class="table-header d-flex align-items-center gap-2">
+            <i class="bi bi-clock-history fs-5 text-primary"></i>
+            <span class="fw-semibold fs-5">Duración por especialidad</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ESPECIALIDAD</th>
+                        <th>DURACIÓN</th>
+                        <th>ESTADO</th>
+                        <th class="text-end">ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaDuraciones"></tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
+        <!-- ============ VISTA PERFIL ============ -->
+        <section class="container-fluid px-4 py-4 vista-admin d-none" id="vistaPerfil" data-vista="perfil">
+            <div class="mb-4">
+                <h1 class="welcome-title">Mi perfil</h1>
+                <p class="welcome-sub">Consulta y actualiza los datos de tu cuenta.</p>
+            </div>
+
+            <div class="tarjeta-perfil">
+                <div class="perfil-encabezado">
+                    <div class="avatar avatar-grande" data-user-initials>AD</div>
+                    <div>
+                        <h2 class="h5 mb-1" data-user-name>Usuario</h2>
+                        <p class="text-secondary mb-0" data-user-email>correo@novasalud.com</p>
+                    </div>
+                </div>
+
+                <form id="formPerfilAdmin" class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label for="perfilNombres" class="form-label fw-semibold">Nombres</label>
+                        <input id="perfilNombres" class="form-control" type="text" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilApellidos" class="form-label fw-semibold">Apellidos</label>
+                        <input id="perfilApellidos" class="form-control" type="text" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilCorreo" class="form-label fw-semibold">Correo electrónico</label>
+                        <input id="perfilCorreo" class="form-control" type="email" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilTelefono" class="form-label fw-semibold">Teléfono</label>
+                        <input id="perfilTelefono" class="form-control" type="tel" maxlength="20" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilPassword" class="form-label fw-semibold">Nueva contraseña</label>
+                        <input id="perfilPassword" class="form-control" type="password" placeholder="Dejar en blanco para no cambiar" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilPasswordConfirm" class="form-label fw-semibold">Confirmar contraseña</label>
+                        <input id="perfilPasswordConfirm" class="form-control" type="password" />
+                    </div>
+                    <div class="col-12 d-flex align-items-center gap-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-floppy me-1"></i> Guardar cambios
+                        </button>
+                        <span id="perfilMensaje" class="small text-success" role="status"></span>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- ======== MODAL SEDE ======== -->
+    <div class="modal fade" id="modalSede" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formSede">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="tituloModalSede">Nueva sede</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="sedeId" />
+                        <div class="mb-3">
+                            <label for="sedeNombre" class="form-label fw-semibold">Nombre</label>
+                            <input id="sedeNombre" class="form-control" type="text" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="sedeDireccion" class="form-label fw-semibold">Dirección</label>
+                            <input id="sedeDireccion" class="form-control" type="text" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="sedeTelefono" class="form-label fw-semibold">Teléfono</label>
+                            <input id="sedeTelefono" class="form-control" type="tel" required />
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="sedeActivo" checked />
+                            <label class="form-check-label" for="sedeActivo">Sede activa</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL ESPECIALIDAD ======== -->
+    <div class="modal fade" id="modalEspecialidad" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formEspecialidad">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="tituloModalEspecialidad">Nueva especialidad</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="especialidadId" />
+                        <div class="mb-3">
+                            <label for="especialidadNombre" class="form-label fw-semibold">Nombre</label>
+                            <input id="especialidadNombre" class="form-control" type="text" required />
+                        </div>
+                        <<div class="mb-3">
+                            <label for="especialidadDuracion" class="form-label fw-semibold">Duración (minutos)</label>
+                            <input id="especialidadDuracion" class="form-control" type="number" min="5" max="180" step="5" required />
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="especialidadActivo" checked />
+                            <label class="form-check-label" for="especialidadActivo">Especialidad activa</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL MÉDICO ======== -->
+    <div class="modal fade" id="modalMedico" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formMedico">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="tituloModalMedico">Nuevo médico</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="medicoId" />
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="medicoNombres" class="form-label fw-semibold">Nombres</label>
+                                <input id="medicoNombres" class="form-control" type="text" required />
+                            </div>
+                            <div class="col-6">
+                                <label for="medicoApellidos" class="form-label fw-semibold">Apellidos</label>
+                                <input id="medicoApellidos" class="form-control" type="text" required />
+                            </div>
+                            <div class="col-6">
+                                <label for="medicoEspecialidad" class="form-label fw-semibold">Especialidad</label>
+                                <select id="medicoEspecialidad" class="form-select" required></select>
+                            </div>
+                            <div class="col-6">
+                                <label for="medicoSede" class="form-label fw-semibold">Sede</label>
+                                <select id="medicoSede" class="form-select" required></select>
+                            </div>
+                            <div class="col-6">
+                                <label for="medicoEmail" class="form-label fw-semibold">Email</label>
+                                <input id="medicoEmail" class="form-control" type="email" required />
+                            </div>
+                            <div class="col-6">
+                                <label for="medicoTelefono" class="form-label fw-semibold">Teléfono</label>
+                                <input id="medicoTelefono" class="form-control" type="tel" required />
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="medicoActivo" checked />
+                                    <label class="form-check-label" for="medicoActivo">Médico activo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL USUARIO ======== -->
+    <div class="modal fade" id="modalUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formUsuario">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5">Editar usuario</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="usuarioId" />
+                        <div class="mb-3">
+                            <label for="usuarioNombre" class="form-label fw-semibold">Nombre completo</label>
+                            <input id="usuarioNombre" class="form-control" type="text" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label for="usuarioRol" class="form-label fw-semibold">Rol</label>
+                            <select id="usuarioRol" class="form-select">
+                                <option>Administrador</option>
+                                <option>Recepción</option>
+                                <option>Médico</option>
+                                <option>Paciente</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="usuarioEstado" class="form-label fw-semibold">Estado</label>
+                            <select id="usuarioEstado" class="form-select">
+                                <option>Activo</option>
+                                <option>Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL HORARIO ======== -->
+    <div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formHorario">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="tituloModalHorario">Nuevo horario</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="horarioId" />
+                        <div class="mb-3">
+                            <label for="horarioMedico" class="form-label fw-semibold">Médico</label>
+                            <select id="horarioMedico" class="form-select" required></select>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="horarioDia" class="form-label fw-semibold">Día de la semana</label>
+                                <select id="horarioDia" class="form-select" required>
+                                    <option value="1">Lunes</option>
+                                    <option value="2">Martes</option>
+                                    <option value="3">Miércoles</option>
+                                    <option value="4">Jueves</option>
+                                    <option value="5">Viernes</option>
+                                    <option value="6">Sábado</option>
+                                    <option value="7">Domingo</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="horarioInicio" class="form-label fw-semibold">Hora inicio</label>
+                                <input id="horarioInicio" class="form-control" type="time" required />
+                            </div>
+                            <div class="col-6">
+                                <label for="horarioFin" class="form-label fw-semibold">Hora fin</label>
+                                <input id="horarioFin" class="form-control" type="time" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL DURACIÓN ======== -->
+<div class="modal fade" id="modalDuracion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="formDuracion">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="tituloModalDuracion">Editar duración</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="duracionIdEspecialidad" />
+                    <div class="mb-3">
+                        <label for="duracionEspecialidad" class="form-label fw-semibold">Especialidad</label>
+                        <input id="duracionEspecialidad" class="form-control" type="text" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="duracionMinutos" class="form-label fw-semibold">Duración (minutos)</label>
+                        <input id="duracionMinutos" class="form-control" type="number" min="5" max="180" step="5" required />
+                        <div class="form-text">Debe ser mayor a 0 y múltiplo de 5.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- ======== TOAST DE MENSAJES ======== -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="mensajeAdmin" class="toast" role="status" aria-live="polite">
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

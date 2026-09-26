@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel paciente | NovaSalud</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/hospital-regular-full.svg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="../css/panel.css" />
+</head>
+<body data-required-role="paciente">
+
+    <!-- ======== BARRA LATERAL ======== -->
+    <nav class="sidebar d-flex flex-column">
+        <h1 class="sidebar-brand">NOVASALUD</h1>
+        <div class="sidebar-role">Panel Paciente</div>
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item"><a href="#inicio" class="nav-link active" data-seccion="inicio"><i class="bi bi-house-door"></i> Inicio</a></li>
+            <li class="nav-item"><a href="#misCitas" class="nav-link" data-seccion="misCitas"><i class="bi bi-calendar-check"></i> Mis citas</a></li>
+            <li class="nav-item"><a href="#perfil" class="nav-link" data-seccion="perfil"><i class="bi bi-person"></i> Mi perfil</a></li>
+            <li class="nav-item"><a href="../index.html" class="nav-link" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right"></i> Salir</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="d-flex align-items-center gap-3">
+                <div class="avatar" data-user-initials>PA</div>
+                <div>
+                    <div class="fw-semibold text-white" data-user-name>Usuario</div>
+                    <small class="usuario-correo" data-user-email>correo@novasalud.com</small>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======== CONTENIDO PRINCIPAL ======== -->
+    <main class="main-content">
+        <header class="top-header d-flex justify-content-end align-items-center">
+            <span class="text-secondary me-auto" id="tituloVista">Inicio</span>
+            <span class="role-badge me-3" data-user-role>Paciente</span>
+            <i class="bi bi-person-circle fs-4"></i>
+        </header>
+
+        <!-- ============ VISTA INICIO ============ -->
+        <section class="container-fluid px-4 py-4 vista-paciente" id="vistaInicio" data-vista="inicio">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Bienvenido</h1>
+                    <p class="welcome-sub">Resumen de tus próximas atenciones.</p>
+                </div>
+                <div class="col-auto d-flex gap-2">
+                    <a href="#misCitas" class="btn btn-outline-primary d-flex align-items-center gap-2" data-seccion="misCitas">
+                        <i class="bi bi-calendar-check"></i> Ver mis citas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Los valores se rellenan desde la API -->
+            <div class="row g-3 mb-4" id="metricasPaciente" aria-live="polite">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="tarjeta-metrica tarjeta-azul">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-calendar-event fs-5 text-primary"></i>
+                            <span class="metric-label">Próximas citas</span>
+                        </div>
+                        <span class="metric-number" id="metricaProximas">0</span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="tarjeta-metrica tarjeta-amarilla">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-clock-history fs-5 text-warning"></i>
+                            <span class="metric-label">Pendientes</span>
+                        </div>
+                        <span class="metric-number" id="metricaPendientes">0</span>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="tarjeta-metrica tarjeta-verde">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-check2-circle fs-5 text-success"></i>
+                            <span class="metric-label">Atendidas</span>
+                        </div>
+                        <span class="metric-number" id="metricaAtendidas">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="table-container" id="proximaCitaContenedor">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar-heart fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Tu próxima atención</span>
+                </div>
+                <div class="p-4 text-secondary" id="proximaCitaDetalle">
+                    Cargando información...
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA MIS CITAS ============ -->
+        <section class="container-fluid px-4 py-4 vista-paciente d-none" id="vistaMisCitas" data-vista="misCitas">
+            <div class="mb-4">
+                <h1 class="welcome-title">Mis citas</h1>
+                <p class="welcome-sub">Consulta el detalle de tus reservas, reprograma o cancela.</p>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar2-week fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Historial de citas</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>FECHA</th>
+                                <th>HORA</th>
+                                <th>ESPECIALIDAD</th>
+                                <th>MÉDICO</th>
+                                <th>SEDE</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMisCitas"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA PERFIL ============ -->
+        <section class="container-fluid px-4 py-4 vista-paciente d-none" id="vistaPerfil" data-vista="perfil">
+            <div class="mb-4">
+                <h1 class="welcome-title">Mi perfil</h1>
+                <p class="welcome-sub">Consulta y actualiza tus datos personales.</p>
+            </div>
+
+            <div class="tarjeta-perfil">
+                <div class="perfil-encabezado">
+                    <div class="avatar avatar-grande" data-user-initials>PA</div>
+                    <div>
+                        <h2 class="h5 mb-1" data-user-name>Usuario</h2>
+                        <p class="text-secondary mb-0" data-user-email>correo@novasalud.com</p>
+                    </div>
+                </div>
+
+                <form id="formPerfil" class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label for="perfilDni" class="form-label fw-semibold">DNI</label>
+                        <input id="perfilDni" class="form-control" type="text" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilFechaNacimiento" class="form-label fw-semibold">Fecha de nacimiento</label>
+                        <input id="perfilFechaNacimiento" class="form-control" type="date" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilNombres" class="form-label fw-semibold">Nombres</label>
+                        <input id="perfilNombres" class="form-control" type="text" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilApellidos" class="form-label fw-semibold">Apellidos</label>
+                        <input id="perfilApellidos" class="form-control" type="text" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilCorreo" class="form-label fw-semibold">Correo electrónico</label>
+                        <input id="perfilCorreo" class="form-control" type="email" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilTelefono" class="form-label fw-semibold">Teléfono</label>
+                        <input id="perfilTelefono" class="form-control" type="tel" maxlength="20" />
+                    </div>
+                    <div class="col-12 d-flex align-items-center gap-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-floppy me-1"></i> Guardar cambios
+                        </button>
+                        <span id="perfilMensaje" class="small text-success" role="status"></span>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- ======== MODAL REPROGRAMAR ======== -->
+    <div class="modal fade" id="modalReprogramar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formReprogramar">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5">Reprogramar cita</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="reprogramarId" />
+                        <div class="mb-3">
+                            <label for="reprogramarFecha" class="form-label fw-semibold">Nueva fecha</label>
+                            <input id="reprogramarFecha" class="form-control" type="date" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="reprogramarHorario" class="form-label fw-semibold">Nuevo horario</label>
+                            <select id="reprogramarHorario" class="form-select" required>
+                            <option value="">Selecciona una fecha primero</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL DETALLE ======== -->
+    <div class="modal fade" id="modalDetalleCita" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Detalle de la cita</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="detalleCitaCuerpo"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== TOAST DE MENSAJES ======== -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="mensajePaciente" class="toast" role="status" aria-live="polite">
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/paciente.js"></script>
+</body>
+</html>
