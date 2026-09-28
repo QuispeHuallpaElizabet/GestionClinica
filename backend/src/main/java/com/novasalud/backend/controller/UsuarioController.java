@@ -1,68 +1,147 @@
 package com.novasalud.backend.controller;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import com.novasalud.backend.data.DatosMock;
 import com.novasalud.backend.models.Usuario;
 
-@RestController // Esta anotación indica que esta clase es un controlador REST, lo que significa que manejará las solicitudes HTTP y devolverá respuestas en formato JSON o XML
-@CrossOrigin(origins = "http://127.0.0.1:5500")
-
+@RestController
+@RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
-    @RequestMapping("/usuario/{id}") // Esta anotación indica que este método manejará las solicitudes HTTP GET a la ruta "/usuario/{id}", donde {id} es un parámetro de ruta que representa el ID del usuario
-    public Usuario getUsuario(@PathVariable Long id) { // El parámetro @PathVariable Long id indica que el valor del parámetro de ruta {id} se asignará a la variable id del método 
-        Usuario usuario = new Usuario();
-        usuario.setId(id); // Se establece el ID del usuario con el valor proporcionado en la solicitud HTTP
-        usuario.setNombre("Juan");
-        usuario.setApellido("Pérez");
-        usuario.setEmail("juanperez@gmail.com");
-        usuario.setTelefono("123456789");
-        usuario.setContraseña("123456");
-        return usuario; // Devuelve un objeto Usuario como respuesta a la solicitud HTTP
+    private final DatosMock datos;
+
+    public UsuarioController(DatosMock datos) {
+        this.datos = datos;
     }
 
-    @RequestMapping("/usuarios") 
-    public List<Usuario> getUsuarios() { 
+    /* ================== GET ================== */
 
-        List<Usuario> usuarios = new ArrayList<>();
-
-        Usuario usuario = new Usuario();
-        usuario.setId(8956L); 
-        usuario.setNombre("Maria");
-        usuario.setApellido("Pérez");
-        usuario.setEmail("juanperez@gmail.com");
-        usuario.setTelefono("123456789");
-        usuario.setContraseña("123456");
-
-        Usuario usuario2 = new Usuario();
-        usuario2.setId(16413L); 
-        usuario2.setNombre("Jose");
-        usuario2.setApellido("Pérez");
-        usuario2.setEmail("juanperez@gmail.com");
-        usuario2.setTelefono("123456789");
-        usuario2.setContraseña("123456");
-
-
-        Usuario usuario3 = new Usuario();
-        usuario3.setId(4545L); 
-        usuario3.setNombre("Juan");
-        usuario3.setApellido("Pérez");
-        usuario3.setEmail("juanperez@gmail.com");
-        usuario3.setTelefono("123456789");
-        usuario3.setContraseña("123456");
-
-        usuarios.add(usuario);
-        usuarios.add(usuario2);
-        usuarios.add(usuario3);
-
-        return usuarios; // Devuelve un objeto Usuario como respuesta a la solicitud HTTP
+    @GetMapping
+    public List<Usuario> listar() {
+        return datos.usuarios;
     }
 
-}   
+    @GetMapping("/{id:\\d+}")
+    public ResponseEntity<Usuario> obtener(@PathVariable Integer id) {
+        return datos.usuarios.stream()
+                .filter(u -> u.getIdUsuario().equals(id))
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/buscar")
+    public List<Usuario> buscar(@RequestParam String texto) {
+        String t = texto == null ? "" : texto.toLowerCase().trim();
+
+        return datos.usuarios.stream()
+                .filter(u -> coincide(u, t))
+                .toList();
+    }
+
+    /* ================== POST ================== */
+
+    @PostMapping
+    public ResponseEntity<Usuario> crear(@RequestBody Usuario usuario) {
+
+        if (usuario.getCorreo() == null || usuario.getContrasena() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        boolean correoDuplicado = datos.usuarios.stream()
+                .anyMatch(u -> u.getCorreo().equalsIgnoreCase(usuario.getCorreo()));
+
+        if (correoDuplicado) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        usuario.setIdUsuario(datos.seqUsuario.incrementAndGet());
+
+        if (usuario.getEstado() == null || usuario.getEstado().isBlank()) {
+            usuario.setEstado("ACTIVO");
+        }
+
+        datos.usuarios.add(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+    }
+
+    /* ================== PUT (merge, no reemplazo) ================== */
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> actualizar(@PathVariable Integer id, @RequestBody Usuario nuevo) {
+
+        for (Usuario actual : datos.usuarios) {
+
+            if (!actual.getIdUsuario().equals(id)) continue;
+
+            if (nuevo.getNombres()    != null) actual.setNombres(nuevo.getNombres());
+            if (nuevo.getApellidos()  != null) actual.setApellidos(nuevo.getApellidos());
+            if (nuevo.getDni()        != null) actual.setDni(nuevo.getDni());
+            if (nuevo.getTelefono()   != null) actual.setTelefono(nuevo.getTelefono());
+            if (nuevo.getCorreo()     != null) actual.setCorreo(nuevo.getCorreo());
+            if (nuevo.getEstado()     != null) actual.setEstado(nuevo.getEstado());
+
+            if (nuevo.getContrasena() != null && !nuevo.getContrasena().isBlank()) {
+                actual.setContrasena(nuevo.getContrasena());
+            }
+
+            if (nuevo.getRoles() != null && !nuevo.getRoles().isEmpty()) {
+                actual.setRoles(nuevo.getRoles());
+            }
+
+            actual.setRequiereCambioContrasena(nuevo.isRequiereCambioContrasena());
+
+            return ResponseEntity.ok(actual);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    /* ================== PATCH estado (activar / desactivar) ================== */
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<Usuario> cambiarEstado(@PathVariable Integer id,@RequestParam String valor) {
+
+        for (Usuario actual : datos.usuarios) {
+            if (actual.getIdUsuario().equals(id)) {
+                actual.setEstado(valor);
+                return ResponseEntity.ok(actual);
+            }
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    /* ================== DELETE ================== */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        boolean eliminado = datos.usuarios.removeIf(u -> u.getIdUsuario().equals(id));
+        return eliminado
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
+
+    /* ================== Helper de búsqueda ================== */
+
+    private boolean coincide(Usuario u, String texto) {
+        if (texto.isEmpty()) return true;
+
+        String nombres   = u.getNombres()   == null ? "" : u.getNombres().toLowerCase();
+        String apellidos = u.getApellidos() == null ? "" : u.getApellidos().toLowerCase();
+        String dni       = u.getDni()       == null ? "" : u.getDni().toLowerCase();
+        String correo    = u.getCorreo()    == null ? "" : u.getCorreo().toLowerCase();
+
+        return nombres.contains(texto)
+                || apellidos.contains(texto)
+                || (nombres + " " + apellidos).contains(texto)
+                || dni.contains(texto)
+                || correo.contains(texto);
+    }
+}

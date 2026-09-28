@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel médico | NovaSalud</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/hospital-regular-full.svg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="../css/panel.css" />
+</head>
+<body data-required-role="medico">
+
+    <!-- ======== BARRA LATERAL ======== -->
+    <nav class="sidebar d-flex flex-column">
+        <h1 class="sidebar-brand">NOVASALUD</h1>
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#agenda" class="nav-link active" data-seccion="agenda">
+                    <i class="bi bi-calendar-week"></i> Mi agenda
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#atenciones" class="nav-link" data-seccion="atenciones">
+                    <i class="bi bi-clipboard2-pulse"></i> Atenciones
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#perfil" class="nav-link" data-seccion="perfil">
+                    <i class="bi bi-person"></i> Mi perfil
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../index.html" class="nav-link" onclick="cerrarSesion()">
+                    <i class="bi bi-box-arrow-right"></i> Salir
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="d-flex align-items-center gap-3">
+                <div class="avatar" data-user-initials>DL</div>
+                <div>
+                    <div class="fw-semibold text-white" data-user-name>Usuario</div>
+                    <small class="usuario-correo" data-user-email>correo@novasalud.com</small>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======== CONTENIDO PRINCIPAL ======== -->
+    <main class="main-content">
+        <header class="top-header d-flex justify-content-end align-items-center">
+            <span class="text-secondary me-auto" id="tituloVista">Mi agenda</span>
+            <span class="text-secondary me-3" data-user-role>Médico</span>
+            <i class="bi bi-person-circle fs-4"></i>
+        </header>
+
+        <!-- ============ VISTA AGENDA ============ -->
+        <section class="container-fluid px-4 py-4 vista-medico" id="vistaAgenda" data-vista="agenda">
+            <div class="row align-items-end mb-4">
+                <div class="col">
+                    <h1 class="welcome-title">Agenda médica</h1>
+                    <p class="welcome-sub">Consulta tus citas y registra el resultado de cada atención.</p>
+                </div>
+                <div class="col-auto">
+                    <label for="filtroFecha" class="form-label small fw-semibold mb-1">Fecha de atención</label>
+                    <input id="filtroFecha" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4" id="metricasMedico" aria-live="polite"></div>
+
+            <section class="table-container">
+                <div class="table-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar2-check fs-5 text-primary"></i>
+                        <span class="fw-semibold fs-5">Citas asignadas</span>
+                    </div>
+                    <div class="agenda-filtros" role="group" aria-label="Filtrar citas por estado">
+                        <button type="button" class="btn btn-sm btn-primary filtro-estado" data-estado="Todas" aria-pressed="true">Todas</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary filtro-estado" data-estado="Pendiente" aria-pressed="false">Pendientes</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary filtro-estado" data-estado="Atendida" aria-pressed="false">Atendidas</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>HORA</th>
+                                <th>PACIENTE</th>
+                                <th>MOTIVO</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAgenda"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA ATENCIONES ============ -->
+        <section class="container-fluid px-4 py-4 vista-medico d-none" id="vistaAtenciones" data-vista="atenciones">
+            <div class="mb-4">
+                <h1 class="welcome-title">Atenciones</h1>
+                <p class="welcome-sub">Consulta las atenciones registradas y sus notas clínicas.</p>
+            </div>
+
+            <div class="filtros-barra mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-6">
+                        <label for="filtroHistorial" class="form-label small fw-semibold">Buscar</label>
+                        <input id="filtroHistorial" class="form-control" type="search"
+                               placeholder="Paciente, motivo o estado" />
+                    </div>
+                </div>
+            </div>
+
+            <section class="table-container">
+                <div class="table-header d-flex align-items-center gap-2">
+                    <i class="bi bi-clipboard2-pulse fs-5 text-primary"></i>
+                    <span class="fw-semibold fs-5">Historial de atenciones</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>FECHA</th>
+                                <th>HORA</th>
+                                <th>PACIENTE</th>
+                                <th>MOTIVO</th>
+                                <th>ESTADO</th>
+                                <th class="text-end">DETALLE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAtenciones"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <!-- ============ VISTA PERFIL ============ -->
+        <section class="container-fluid px-4 py-4 vista-medico d-none" id="vistaPerfil" data-vista="perfil">
+            <div class="mb-4">
+                <h1 class="welcome-title">Mi perfil</h1>
+                <p class="welcome-sub">Consulta tus datos profesionales y actualiza tu teléfono de contacto.</p>
+            </div>
+
+            <div class="tarjeta-perfil">
+                <div class="perfil-encabezado">
+                    <div class="avatar avatar-grande" data-user-initials>DL</div>
+                    <div>
+                        <h2 class="h5 mb-1" data-user-name>Usuario</h2>
+                        <p class="text-secondary mb-0" data-user-email>correo@novasalud.com</p>
+                    </div>
+                </div>
+
+                <form id="formPerfil" class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label for="perfilNombre" class="form-label fw-semibold">Nombre</label>
+                        <input id="perfilNombre" class="form-control" type="text" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilCorreo" class="form-label fw-semibold">Correo electrónico</label>
+                        <input id="perfilCorreo" class="form-control" type="email" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilEspecialidad" class="form-label fw-semibold">Especialidad</label>
+                        <input id="perfilEspecialidad" class="form-control" type="text" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilSede" class="form-label fw-semibold">Sede</label>
+                        <input id="perfilSede" class="form-control" type="text" readonly />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="perfilTelefono" class="form-label fw-semibold">Teléfono de contacto</label>
+                        <input id="perfilTelefono" class="form-control" type="tel" maxlength="20" />
+                    </div>
+                    <div class="col-12 d-flex align-items-center gap-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-floppy me-1"></i> Guardar cambios
+                        </button>
+                        <span id="perfilMensaje" class="small text-success" role="status"></span>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- ======== MODAL REGISTRAR ATENCIÓN ======== -->
+    <div class="modal fade" id="modalAtencion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formAtencion">
+                    <div class="modal-header">
+                        <div>
+                            <h2 class="modal-title fs-5" id="tituloAtencion">Registrar atención</h2>
+                            <p class="text-secondary small mb-0" id="resumenPaciente"></p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="atencionCitaId" />
+                        <label for="notaAtencion" class="form-label fw-semibold">
+                            Nota de atención <span class="text-danger">*</span>
+                        </label>
+                        <textarea id="notaAtencion" class="form-control" rows="5" maxlength="1000" required
+                                placeholder="Resumen de la consulta, indicaciones o seguimiento..."></textarea>
+                        <div class="form-text">Máximo 1000 caracteres.</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check2-circle me-1"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== TOAST DE MENSAJES ======== -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="mensajeMedico" class="toast" role="status" aria-live="polite">
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/medico.js"></script>
+</body>
+</html>
