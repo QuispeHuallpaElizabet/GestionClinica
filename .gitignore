@@ -1,0 +1,21 @@
+# Dependencias y compilados
+**/node_modules/
+**/target/
+**/dist/
+*.class
+*.log
+
+# Configuración sensible
+.env
+.env.*
+!.env.example
+**/application-local.properties
+**/application-local.yml
+*.local
+
+# Archivos del entorno de desarrollo
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
