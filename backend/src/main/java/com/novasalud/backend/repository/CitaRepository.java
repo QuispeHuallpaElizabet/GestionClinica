@@ -10,6 +10,7 @@ import com.novasalud.backend.entity.Cita;
 
 public interface CitaRepository extends JpaRepository<Cita,Long> {
     List<Cita> findByMedicoIdAndFechaCita(Long medicoId, LocalDate fechaCita);
+    List<Cita> findByMedicoIdAndFechaCitaBetween(Long medicoId, LocalDate desde, LocalDate hasta);
     List<Cita> findByPacienteId(Long pacienteId);
     boolean existsByMedicoIdAndFechaCitaAndHoraCita(Long medicoId, LocalDate fechaCita, LocalTime horaCita);
 }
