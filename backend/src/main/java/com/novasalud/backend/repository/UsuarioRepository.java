@@ -9,6 +9,8 @@ import com.novasalud.backend.entity.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
     Optional<Usuario>findByCorreoIgnoreCase(String correo);
+    boolean existsByCorreoIgnoreCase(String correo);
     boolean existsByCorreoIgnoreCaseAndIdNot(String correo, Long idUsuario);
+    boolean existsByDni(String dni);
     Optional<Usuario> findByCorreo(String correo);
 }

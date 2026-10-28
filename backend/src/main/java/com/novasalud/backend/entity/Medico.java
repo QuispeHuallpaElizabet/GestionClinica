@@ -2,6 +2,8 @@ package com.novasalud.backend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import com.novasalud.backend.enums.EstadoGenerico;
 
 @Entity 
 @Table (name = "medico")
@@ -40,6 +43,10 @@ public class Medico {
     @Column (name = "numero_colegiatura", nullable = false, unique = true, length = 20)
     private String  numeroColegiatura;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false, length = 20)
+    private EstadoGenerico estado = EstadoGenerico.ACTIVO;
+
     public Medico() {
     }
 
@@ -64,4 +71,7 @@ public class Medico {
 
     public String getNumeroColegiatura() { return numeroColegiatura; }
     public void setNumeroColegiatura(String numeroColegiatura) { this.numeroColegiatura = numeroColegiatura; } 
+
+    public EstadoGenerico getEstado() { return estado; }
+    public void setEstado(EstadoGenerico estado) { this.estado = estado; }
 }
